@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useGooglePicker } from "./hooks/useDrivePicker";
-import { useGmail } from "./hooks/useGmail";
-import { GooglePickerDocument, TokenClient, TokenClientConfig } from "./type/googleTypes";
+import { useGooglePicker } from "./hooks/google/useDrivePicker";
+import { useGmail } from "./hooks/google/useGmail";
+import { GooglePickerDocument, TokenClient, TokenClientConfig } from "./type/Google";
 import axios from "axios";
-import { Backend_Url } from "./Config";
-import { MailOptions } from "./type/BackendType";
+import { MailOptions } from "./type/Mail";
 
 let haveInit = false;
 const initApp = () => {
@@ -12,7 +11,7 @@ const initApp = () => {
   console.log("init app");
 
   // axios
-  axios.defaults.baseURL = Backend_Url;
+  axios.defaults.baseURL = import.meta.env.BASE_URL;
   axios.defaults.headers.post["Content-Type"] = "application/json";
 
   haveInit = true;
@@ -48,6 +47,7 @@ const Temp = () => {
       to: mailTo,
       subject: mailSubject,
       text: mailText,
+      html: ""
     };
     
     sendGmail(options);

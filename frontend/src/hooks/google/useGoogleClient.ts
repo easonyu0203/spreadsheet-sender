@@ -5,7 +5,7 @@ import {
   OverridableTokenClientConfig,
   TokenClient,
   TokenClientConfig,
-} from "../type/googleTypes";
+} from "../../type/Google";
 import { EventEmitter } from "events";
 
 let tokenClient: TokenClient;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useScript from "react-script-hook";
-import { GooglePickerDocument, OverridableTokenClientConfig } from "../type/googleTypes";
+import { GooglePickerDocument, OverridableTokenClientConfig } from "../../type/Google";
 import { GetCurrentScope, GetGoogleClientEvent, GetTokenClient, useTokenClient } from "./useGoogleClient";
 
 export const useGooglePicker = (): [

@@ -4,7 +4,19 @@ module.exports = {
         "./src/**/*.{vue,js,ts,jsx,tsx}",
     ],
     theme: {
-        extend: {},
+        fontFamily: {
+
+        },
+
+        extend: {
+            colors: {
+                bWhite: "#FFFFFF",
+                bGray: "#F6F6F6",
+                bBlack: "#242424",
+                bPurple: "#3D0ADC",
+
+            },
+        },
     },
     plugins: [],
 }

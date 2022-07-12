@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { OverridableTokenClientConfig } from "../type/googleTypes";
+import { OverridableTokenClientConfig } from "../../type/Google";
 import { GetCurrentScope, GetGoogleClientEvent, GetTokenClient, useTokenClient } from "./useGoogleClient";
-import {MailOptions, SendEmailConfig, SendEmailResponse} from "../type/BackendType"
+import {MailOptions, SendEmailConfig, SendEmailResponse} from "../../type/Mail"
 
 export const useGmail = (): [
   boolean,
