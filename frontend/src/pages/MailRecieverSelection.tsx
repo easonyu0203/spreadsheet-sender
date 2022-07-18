@@ -60,6 +60,15 @@ const MailRecieverSelection = (props: Props) => {
     );
   }, [sheetData]);
 
+  const ScrollSyncArray = useRef<any>({});
+  const onScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const v = e.currentTarget.scrollLeft;
+    Object.keys(ScrollSyncArray.current).forEach(i=>{
+      (ScrollSyncArray.current[i] as HTMLDivElement).scrollLeft = v;
+    })
+    
+  };
+
   return (
     <div className=" pt-32 h-screen flex flex-col justify-start items-center space-y-6">
       {/* STEP 2 TEXT */}
@@ -87,9 +96,13 @@ const MailRecieverSelection = (props: Props) => {
                   );
                 })}
                 {/* scrollable columns */}
-                <div className=" w-80 overflow-x-auto Flipped relative top-[-7px]">
+                <div ref={(ref)=> {
+                  ScrollSyncArray.current[0] = ref;
+                  }} 
+                  onScroll={onScroll}
+                  className=" w-80 overflow-x-auto Flipped relative top-[-7px]">
                   <div className="FContent flex pt-2">
-                    {headers.slice(2).map((v, i) => { 
+                    {headers.slice(2).map((v, i) => {
                       return (
                         <div className=" flex-none w-36" key={i}>
                           {v}
@@ -109,9 +122,7 @@ const MailRecieverSelection = (props: Props) => {
             {rows.slice(0).map((v, i) => {
               return (
                 <div key={i}>
-                  <div
-                    className=" flex justify-between items-center px-6"
-                  >
+                  <div className=" flex justify-between items-center px-6">
                     <div className=" flex">
                       {v.data.slice(0, 2).map((v, i) => {
                         const a = ["36", "48"];
@@ -126,7 +137,13 @@ const MailRecieverSelection = (props: Props) => {
                           </div>
                         );
                       })}
-                      <div className=" w-80 overflow-x-auto DContent Flipped relative">
+                      <div
+                      ref={(ref) => {
+                        ScrollSyncArray.current[i+1] = ref;
+                      }}
+                        onScroll={onScroll}
+                        className=" w-80 overflow-x-auto DContent Flipped relative"
+                      >
                         <div className="FContent flex pt-2">
                           {v.data.slice(2).map((v, i) => {
                             return (
@@ -144,16 +161,21 @@ const MailRecieverSelection = (props: Props) => {
                     <div className=" h-4 aspect-square bg-[#E9E9E9] rounded-full mt-3 mr-4"></div>
                   </div>
 
-                  {rows.length !== 0 && rows.length - 1 !== i &&
-                  <hr className=" bg-slate-300 border-slate-300 border-[1px] mx-4 mt-2" />
-                  }
+                  {rows.length !== 0 && rows.length - 1 !== i && (
+                    <hr className=" bg-slate-300 border-slate-300 border-[1px] mx-4 mt-2" />
+                  )}
                 </div>
               );
             })}
           </div>
           <div className=" flex-initial flex justify-between pr-8 pl-4">
             <form>
-                <input className="p-1 pl-4 bg-[#F6F6F6] text-sm rounded-lg" placeholder="Search" type="text" name="name" />
+              <input
+                className="p-1 pl-4 bg-[#F6F6F6] text-sm rounded-lg"
+                placeholder="Search"
+                type="text"
+                name="name"
+              />
             </form>
             <button className=" bg-bPurple text-bWhite w-28 rounded py-[2px]">
               Next
