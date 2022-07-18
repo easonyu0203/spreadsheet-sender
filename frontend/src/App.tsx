@@ -1,18 +1,22 @@
-import React, { useEffect } from "react";
 import AppHeader from "./components/AppHeader";
-import useInitAxios from "./hooks/useInitAxios";
-import LandingPage from "./pages/LandingPage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Landing from "./pages/Landing";
+import ContactUs from "./pages/ContactUs";
+import MailRecieverSelection from "./pages/MailRecieverSelection";
 
 const App = () => {
-
-  useInitAxios(); // init axios
-
   return (
     <>
-      <div className="flex flex-col">
-          <AppHeader logoWhite={true} />
-          <LandingPage/>
-      </div>
+      <BrowserRouter>
+        <div className="flex flex-col">
+          <AppHeader />
+          <Routes>
+            <Route path="/" element={<Landing/>}/>
+            <Route path="mail-reciever-selection" element={<MailRecieverSelection/>}/>
+            <Route path="contact" element={<ContactUs/>}/>
+          </Routes>
+        </div>
+      </BrowserRouter>
     </>
   );
 };

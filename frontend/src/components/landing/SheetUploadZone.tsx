@@ -4,6 +4,7 @@ import { FaGoogleDrive } from "react-icons/fa";
 import { BiUpload } from "react-icons/bi";
 import { useGooglePicker } from "../../hooks/google/useDrivePicker";
 import { GooglePickerDocument } from "../../type/Google";
+import useSheetContext from "../../contexts/sheetContext";
 
 const gDriveStyle =
   " bg-bPurple text-bWhite text-sm \
@@ -12,10 +13,12 @@ const gDriveNotReadyStyle =
   " bg-bPurple text-bWhite text-sm \
 border-2 bg-slate-100 text-slate-400";
 
-
 const SheetUploadZone = () => {
   // sheet data
-  const [sheetData, setSheetData] = useState<string[][]>([]);
+  const {
+    state: { sheetData },
+    sender,
+  } = useSheetContext();
 
   // drop zone
   const [dropEnable, setDropEnable] = useState(true);
@@ -35,12 +38,9 @@ const SheetUploadZone = () => {
     let data = response.result.sheets[0].data[0].rowData.map((d: any) =>
       d["values"].map((d: any) => d["formattedValue"])
     );
-    console.log("get sheet data");
-    console.log(data);
-    setSheetData(data);
+    sender({ type: "SET_SHEET", payload: data });
   };
 
-  useEffect(() => {}, [acceptedFiles]);
 
   return (
     <div className=" flex flex-col space-y-3 h-full">
