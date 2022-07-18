@@ -1,5 +1,4 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import useSheetContext from "../contexts/sheetContext";
 import devSheetData from "./test1";
 
@@ -74,7 +73,6 @@ const MailRecieverSelection = (props: Props) => {
       {/* FILTER BOARD */}
       <div className=" h-[75%] min-w-[70%] w-[85%] pb-4 shadow-[0px_4px_15px_rgba(0,0,0,0.1)] rounded-3xl">
         <div className="flex flex-col space-y-4 w-full h-full">
-          <ScrollSync>
           {/* Header */}
           <div className=" flex-initial">
             <div className=" flex justify-between items-center px-6 pt-6">
@@ -91,7 +89,7 @@ const MailRecieverSelection = (props: Props) => {
                 {/* scrollable columns */}
                 <div className=" w-80 overflow-x-auto Flipped relative top-[-7px]">
                   <div className="FContent flex pt-2">
-                    {headers.slice(2).map((v, i) => {
+                    {headers.slice(2).map((v, i) => { 
                       return (
                         <div className=" flex-none w-36" key={i}>
                           {v}
@@ -110,12 +108,10 @@ const MailRecieverSelection = (props: Props) => {
           <div className=" overflow-auto flex-auto mr-4">
             {rows.slice(0).map((v, i) => {
               return (
-                <>
+                <div key={i}>
                   <div
                     className=" flex justify-between items-center px-6"
-                    key={i}
                   >
-                    {/* Fix columns */}
                     <div className=" flex">
                       {v.data.slice(0, 2).map((v, i) => {
                         const a = ["36", "48"];
@@ -130,7 +126,6 @@ const MailRecieverSelection = (props: Props) => {
                           </div>
                         );
                       })}
-                      {/* scrollable columns */}
                       <div className=" w-80 overflow-x-auto DContent Flipped relative">
                         <div className="FContent flex pt-2">
                           {v.data.slice(2).map((v, i) => {
@@ -152,7 +147,7 @@ const MailRecieverSelection = (props: Props) => {
                   {rows.length !== 0 && rows.length - 1 !== i &&
                   <hr className=" bg-slate-300 border-slate-300 border-[1px] mx-4 mt-2" />
                   }
-                </>
+                </div>
               );
             })}
           </div>
@@ -164,7 +159,6 @@ const MailRecieverSelection = (props: Props) => {
               Next
             </button>
           </div>
-          </ScrollSync>
         </div>
       </div>
     </div>
