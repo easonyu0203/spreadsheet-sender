@@ -2,7 +2,8 @@ import AppHeader from "./components/AppHeader";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import ContactUs from "./pages/ContactUs";
-import MailRecieverSelection from "./pages/MailRecieverSelection";
+import MailSelect from "./pages/MailSelect";
+import MailWrite from "./pages/MailWrite";
 
 const App = () => {
   return (
@@ -12,7 +13,8 @@ const App = () => {
           <AppHeader />
           <Routes>
             <Route path="/" element={<Landing/>}/>
-            <Route path="mail-reciever-selection" element={<MailRecieverSelection/>}/>
+            <Route path="mail-reciever-selection" element={<MailSelect/>}/>
+            <Route path="mail-write" element={<MailWrite/>}/>
             <Route path="contact" element={<ContactUs/>}/>
           </Routes>
         </div>

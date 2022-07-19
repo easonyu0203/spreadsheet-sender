@@ -16,6 +16,9 @@ module.exports = {
                 bPurple: "#3D0ADC",
 
             },
+            transitionProperty: {
+                'row': 'opacity, transform, height'
+            }
         },
     },
     plugins: [],
