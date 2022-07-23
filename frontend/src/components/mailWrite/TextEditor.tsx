@@ -16,22 +16,36 @@ import { MentionData } from "@draft-js-plugins/mention";
 import "draft-js/dist/Draft.css";
 import "./css/MentionPlugin.css";
 import { BiUnderline, BiBold, BiItalic } from "react-icons/bi";
+import useSheetContext from "../../contexts/sheetContext";
 
-type Props = {};
+type Props = {
+  title: string;
+  inlineStyleButton?: boolean;
+  keyCommand?: boolean;
+  className?: string;
+  state: {
+    editorState: EditorState,
+    setEditorState:React.Dispatch<React.SetStateAction<EditorState>>,
+  }
+};
 type InLineStype = "UNDERLINE" | "BOLD" | "ITALIC";
-const mentions: MentionData[] = [
-  {
-    name: "Matthew Russell",
-  },
-  {
-    name: "Julian Krispel-Samsel",
-  },
-];
 
-const ContentEditor = (props: Props) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+const TextEditor = ({
+  title,
+  className,
+  inlineStyleButton,
+  keyCommand,
+  state: {editorState,setEditorState}
+}: Props) => {
   const editorRef = useRef<Editor>(null);
+  const {
+    state: { sheetHeaders },
+  } = useSheetContext();
+
   // mention
+  const mentions = sheetHeaders.map((v) => {
+    return { name: v };
+  });
   const [suggestions, setSuggestions] = useState(mentions);
   const { MentionSuggestions, plugins } = useMemo(() => {
     const mentionPlugin = createMentionPlugin({
@@ -44,12 +58,16 @@ const ContentEditor = (props: Props) => {
     return { plugins, MentionSuggestions };
   }, []);
 
-  const onSearchChange = useCallback(({ value }: { value: string }) => {
-    setSuggestions(defaultSuggestionsFilter(value, mentions));
-  }, []);
+  const onSearchChange = useCallback(
+    ({ value }: { value: string }) => {
+      setSuggestions(defaultSuggestionsFilter(value, mentions));
+    },
+    [mentions]
+  );
 
   // button
   const handleKeyCommand = (command: string) => {
+    if (!keyCommand) return "not-handled";
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       setEditorState(newState);
@@ -77,44 +95,46 @@ const ContentEditor = (props: Props) => {
   return (
     <>
       <div className="flex justify-between">
-        <div className=" text-sm font-medium">Content</div>
-        <div className="flex rounded-sm shadow">
-          <button
-            onMouseDown={(e) => toggleInlineStype(e, "UNDERLINE")}
-            className={
-              " p-1 flex justify-center items-center" +
-              (styleButtonToggle["UNDERLINE"]
-                ? " bg-slate-400"
-                : " hover:bg-slate-200 ")
-            }
-          >
-            <BiUnderline size={16} />
-          </button>
-          <button
-            onMouseDown={(e) => toggleInlineStype(e, "BOLD")}
-            className={
-              " p-1 font-bold flex justify-center items-center" +
-              (styleButtonToggle["BOLD"]
-                ? " bg-slate-400"
-                : " hover:bg-slate-200 ")
-            }
-          >
-            <BiBold size={16} />
-          </button>
-          <button
-            onMouseDown={(e) => toggleInlineStype(e, "ITALIC")}
-            className={
-              " p-1 italic flex justify-center items-center" +
-              (styleButtonToggle["ITALIC"]
-                ? " bg-slate-400"
-                : " hover:bg-slate-200 ")
-            }
-          >
-            <BiItalic size={16} />
-          </button>
-        </div>
+        <div className=" text-sm font-medium">{title}</div>
+        {inlineStyleButton && (
+          <div className="flex rounded-sm shadow">
+            <button
+              onMouseDown={(e) => toggleInlineStype(e, "UNDERLINE")}
+              className={
+                " p-1 flex justify-center items-center" +
+                (styleButtonToggle["UNDERLINE"]
+                  ? " bg-slate-400"
+                  : " hover:bg-slate-200 ")
+              }
+            >
+              <BiUnderline size={16} />
+            </button>
+            <button
+              onMouseDown={(e) => toggleInlineStype(e, "BOLD")}
+              className={
+                " p-1 font-bold flex justify-center items-center" +
+                (styleButtonToggle["BOLD"]
+                  ? " bg-slate-400"
+                  : " hover:bg-slate-200 ")
+              }
+            >
+              <BiBold size={16} />
+            </button>
+            <button
+              onMouseDown={(e) => toggleInlineStype(e, "ITALIC")}
+              className={
+                " p-1 italic flex justify-center items-center" +
+                (styleButtonToggle["ITALIC"]
+                  ? " bg-slate-400"
+                  : " hover:bg-slate-200 ")
+              }
+            >
+              <BiItalic size={16} />
+            </button>
+          </div>
+        )}
       </div>
-      <div className=" p-1 border bg-[#F7F7F7] rounded shadow-[inset_0px_1px_10px_rgba(0,0,0,0.05)] w-full h-36 overflow-auto">
+      <div className={className}>
         {/* <MyEditor/> */}
         <Editor
           ref={editorRef}
@@ -136,4 +156,4 @@ const ContentEditor = (props: Props) => {
   );
 };
 
-export default ContentEditor;
+export default TextEditor;
