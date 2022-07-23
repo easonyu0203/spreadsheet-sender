@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Row } from "./BoardRows";
+import { SheetRow } from "../../contexts/sheetContext";
 
 type Props = {
-  rows: Row[];
-  setRows: React.Dispatch<React.SetStateAction<Row[]>>;
+  rows: SheetRow[];
+  setRows: (rows: SheetRow[]) => void;
 };
 
 const BoardFooter = ({ rows, setRows }: Props) => {

@@ -1,32 +1,35 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import BoardFooter from "../components/mailSelect/BoardFooter";
 import BoardHeader from "../components/mailSelect/BoardHeader";
-import BoardRows, { Row } from "../components/mailSelect/BoardRows";
+import BoardRows from "../components/mailSelect/BoardRows";
 import Step2Text from "../components/mailSelect/Step2Text";
-import useSheetContext from "../contexts/sheetContext";
+import useSheetContext, {
+  RawDataPlayload,
+  SheetPayload,
+  SheetRow,
+} from "../contexts/sheetContext";
 import devSheetData from "./test1";
+import "./css/MailSelect.css";
 
 type Props = {};
 
 const MailSelect = (props: Props) => {
   const {
-    state: { sheetData },
+    state: { sheetHeaders, sheetRows, rawData },
     sender,
   } = useSheetContext();
 
-  const [headers, setHeaders] = useState<string[]>([]);
-  const [rows, setRows] = useState<Row[]>([]);
-
   if (import.meta.env.DEV) {
     useEffect(() => {
-      sender({ type: "SET_SHEET", payload: devSheetData });
+      const payload: RawDataPlayload = { rawData: devSheetData };
+      sender({ type: "SET_RAW_DATA", payload });
     }, []);
   }
 
   // set display board using sheet data
   useEffect(() => {
-    if (sheetData.length === 0) return;
-    let _sheetData: string[][] = JSON.parse(JSON.stringify(sheetData));
+    if (rawData.length === 0) return;
+    let _sheetData: string[][] = JSON.parse(JSON.stringify(rawData));
     const _headers = _sheetData[0];
     // get name & email header index
     let nameIndex: number | undefined, emailIndex: number | undefined;
@@ -52,13 +55,14 @@ const MailSelect = (props: Props) => {
     );
     // set header and row
     console.log(_sheetData);
-    setHeaders(_sheetData[0]);
-    setRows(
-      _sheetData.slice(1).map((row) => {
+    const payload: SheetPayload = {
+      sheetHeaders: _sheetData[0],
+      sheetRows: _sheetData.slice(1).map((row) => {
         return { data: row, picked: true, show: true };
-      })
-    );
-  }, [sheetData]);
+      }),
+    };
+    sender({type: "SET_SHEET", payload})
+  }, [rawData]);
 
   const ScrollSyncDict = useRef<{ [key: number]: HTMLElement }>({});
   const onScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -70,7 +74,6 @@ const MailSelect = (props: Props) => {
     });
   };
 
-
   return (
     <div className=" pt-32 h-screen flex flex-col justify-start items-center space-y-6">
       <Step2Text />
@@ -78,24 +81,31 @@ const MailSelect = (props: Props) => {
       <div className=" h-[75%] min-w-[70%] w-[85%] pb-4 shadow-[0px_4px_15px_rgba(0,0,0,0.1)] rounded-3xl">
         <div className="flex flex-col space-y-4 w-full h-full">
           <BoardHeader
-            headers={headers}
+            headers={sheetHeaders}
             onPickAll={() => {
-              rows.forEach(row=>row.picked = false);
-              setRows([...rows]);
+              sheetRows.forEach((row) => (row.picked = false));
+              const payload: SheetPayload = {
+                sheetHeaders,
+                sheetRows: [...sheetRows],
+              };
+              sender({ type: "SET_SHEET", payload });
             }}
             onScroll={onScroll}
             ScrollSyncDict={ScrollSyncDict}
           />
           <BoardRows
-            rows={rows}
-            setRows={setRows}
+            rows={sheetRows}
+            setRows={(rows: SheetRow[]) => {
+              const payload: SheetPayload = { sheetHeaders, sheetRows: rows };
+              sender({ type: "SET_SHEET", payload });
+            }}
             onScroll={onScroll}
             ScrollSyncDict={ScrollSyncDict}
           />
-          <BoardFooter
-          rows={rows}
-          setRows={setRows}
-           />
+          <BoardFooter rows={sheetRows} setRows={(rows: SheetRow[]) => {
+              const payload: SheetPayload = { sheetHeaders, sheetRows: rows };
+              sender({ type: "SET_SHEET", payload });
+            }} />
         </div>
       </div>
     </div>

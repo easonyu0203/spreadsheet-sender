@@ -13,7 +13,7 @@ const App = () => {
           <AppHeader />
           <Routes>
             <Route path="/" element={<Landing/>}/>
-            <Route path="mail-reciever-selection" element={<MailSelect/>}/>
+            <Route path="mail-select" element={<MailSelect/>}/>
             <Route path="mail-write" element={<MailWrite/>}/>
             <Route path="contact" element={<ContactUs/>}/>
           </Routes>

@@ -1,30 +1,44 @@
 import { createContext, useReducer, useContext } from "react";
 
+export interface SheetRow {
+    data: string[];
+    picked: boolean;
+    show: boolean;
+  }
+
 interface State{
-    sheetData: string[][],
-    filteredsheetData: string[][],
+    sheetHeaders: string[],
+    sheetRows: SheetRow[],
+    rawData: string[][],
 }
 
-type ActionKind ="SET_SHEET" | "SET_FILTERED_SHEET";
+export type ActionKind = "SET_SHEET" | "SET_RAW_DATA";
 
+export type SheetPayload = {sheetHeaders: string[], sheetRows: SheetRow[]}
+export type RawDataPlayload = {rawData: string[][]}
 
 interface Action {
     type: ActionKind,
-    payload: string[][],
+    payload: any,
 }
 
+
 const initialState: State = {
-    sheetData: [],
-    filteredsheetData: [],
+    sheetHeaders: [],
+    sheetRows: [],
+    rawData: [],
 }
 
 const sheetReducer = (state: State, {type, payload}: Action): State => {
     switch (type) {
         case "SET_SHEET":
-            return {...state, sheetData: payload};
-        case "SET_FILTERED_SHEET":
-            return{...state, filteredsheetData: payload};
+            const {sheetHeaders, sheetRows} = payload as SheetPayload;
+            return {...state, sheetHeaders, sheetRows};
+        case "SET_RAW_DATA":
+            const {rawData} = payload as RawDataPlayload;
+            return {...state, rawData};
         default:
+            throw new Error(`[sheetContext] cant handle action type: ${type}`);
             return state;
     }
 }

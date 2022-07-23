@@ -1,14 +1,10 @@
 import React, { useEffect } from "react";
+import { SheetRow } from "../../contexts/sheetContext";
 
-export interface Row {
-  data: string[];
-  picked: boolean;
-  show: boolean;
-}
 
 type Props = {
-  rows: Row[];
-  setRows: React.Dispatch<React.SetStateAction<Row[]>>;
+  rows: SheetRow[];
+  setRows: (rows: SheetRow[]) => void;
   onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
   ScrollSyncDict: React.MutableRefObject<{
     [key: number]: HTMLElement;

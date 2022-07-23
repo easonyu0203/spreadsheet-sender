@@ -1,17 +1,17 @@
-import React from "react";
+import ContentEditor from "../components/mailWrite/ContentEditor";
 
-type Props = {};
+const MailWrite = () => {
+  
 
-const MailWrite = (props: Props) => {
   return (
     <div className=" w-screen h-screen flex flex-col pt-16  px-16">
       <div className=" flex-auto flex">
-        <div className="w-[50%] flex-auto  flex flex-col justify-between pt-5 pr-6">
+        <div className="w-[50%] flex-auto flex flex-col space-y-10 justify-between pt-5 pr-6">
           <div>
             <div className=" text-sm font-semibold">step 3</div>
             <div className=" text-4xl font-semibold">Write the mail</div>
           </div>
-          <div className=" flex flex-col space-y-4">
+          <div className=" flex-auto flex flex-col space-y-4">
             <div>
               <form>
                 <label className=" text-sm font-medium" htmlFor="title">
@@ -27,18 +27,7 @@ const MailWrite = (props: Props) => {
               </form>
             </div>
             <div>
-              <form>
-                <label className=" text-sm font-medium" htmlFor="content">
-                  Content
-                </label>
-                <br />
-                <textarea
-                  id="content"
-                  rows={5}
-                  className=" p-1 border bg-[#F7F7F7] rounded shadow-[inset_0px_1px_10px_rgba(0,0,0,0.05)] w-full"
-                  placeholder="some place holder..."
-                ></textarea>
-              </form>
+              <ContentEditor/>
             </div>
             <div>
               <form>
@@ -52,7 +41,6 @@ const MailWrite = (props: Props) => {
                   className=" p-1 border bg-[#F7F7F7] rounded shadow-[inset_0px_1px_10px_rgba(0,0,0,0.05)] w-full"
                   placeholder="some place holder..."
                 ></textarea>
-                
               </form>
             </div>
           </div>
