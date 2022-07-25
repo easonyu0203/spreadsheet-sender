@@ -56,14 +56,12 @@ const MailSelect = (props: Props) => {
           .concat(row.slice(j + 1))
       );
       // set header and row
-      console.log(_sheetData);
       const payload: SheetPayload = {
         sheetHeaders: _sheetData[0],
         sheetRows: _sheetData.slice(1).map((row) => {
           return { data: row, picked: true, show: true };
         }),
       };
-      console.log(JSON.stringify(payload));
       sender({ type: "SET_SHEET", payload });
     };
     setSheet();

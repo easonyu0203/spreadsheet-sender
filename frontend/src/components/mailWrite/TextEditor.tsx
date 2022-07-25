@@ -24,9 +24,9 @@ type Props = {
   keyCommand?: boolean;
   className?: string;
   state: {
-    editorState: EditorState,
-    setEditorState:React.Dispatch<React.SetStateAction<EditorState>>,
-  }
+    editorState: EditorState;
+    setEditorState: (editorState: EditorState) => void;
+  };
 };
 type InLineStype = "UNDERLINE" | "BOLD" | "ITALIC";
 
@@ -35,7 +35,7 @@ const TextEditor = ({
   className,
   inlineStyleButton,
   keyCommand,
-  state: {editorState,setEditorState}
+  state: { editorState, setEditorState },
 }: Props) => {
   const editorRef = useRef<Editor>(null);
   const {
@@ -44,11 +44,18 @@ const TextEditor = ({
 
   // mention
   const mentions = sheetHeaders.map((v) => {
-    return { name: v };
+    return { name:`[${v}]` };
   });
   const [suggestions, setSuggestions] = useState(mentions);
   const { MentionSuggestions, plugins } = useMemo(() => {
     const mentionPlugin = createMentionPlugin({
+      mentionComponent(mentionProps: any) {
+        return (
+          <span className={mentionProps.className}>
+            {mentionProps.children}
+          </span>
+        );
+      },
       entityMutability: "IMMUTABLE",
     });
     // eslint-disable-next-line no-shadow
@@ -147,7 +154,7 @@ const TextEditor = ({
         <MentionSuggestions
           suggestions={suggestions}
           onSearchChange={onSearchChange}
-          onAddMention={() => {
+          onAddMention={(e: any) => {
             // get the mention object selected
           }}
         />

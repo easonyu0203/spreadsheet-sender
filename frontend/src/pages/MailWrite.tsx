@@ -4,17 +4,26 @@ import { stateToHTML } from "draft-js-export-html";
 import TextEditor from "../components/mailWrite/TextEditor";
 import useSheetContext, { SheetPayload } from "../contexts/sheetContext";
 import devSheet from "./Sheet.json";
+import { Link } from "react-router-dom";
+import useArticleContext from "../contexts/ArticleContext";
+import useMailSender from "../hooks/useMailSender";
+import useArticleInstancing from "../hooks/ulti/useArticleInstacing";
 
 const MailWrite = () => {
-  const { sender } = useSheetContext();
-  const [titleES, setTitleES] = useState(EditorState.createEmpty());
-  const [contentES, SetContentES] = useState(EditorState.createEmpty());
-  const [extraES, setextraES] = useState(EditorState.createEmpty());
+  const { sender: sheetSender } = useSheetContext();
+  const {
+    state: { titleES, contentES, extraES },
+    sender: articleSender,
+  } = useArticleContext();
+
+  const { titleHTML, contentHTML, extraHTML } = useArticleInstancing({
+    template: true,
+  })[0];
 
   // debug use test sheet
   useEffect(() => {
     if (import.meta.env.DEV) {
-      sender({ type: "SET_SHEET", payload: devSheet });
+      sheetSender({ type: "SET_SHEET", payload: devSheet });
     }
   }, []);
 
@@ -31,7 +40,14 @@ const MailWrite = () => {
               <TextEditor
                 title="Title"
                 className=" p-1 border bg-[#F7F7F7] rounded shadow-[inset_0px_1px_10px_rgba(0,0,0,0.05)]"
-                state={{ editorState: titleES, setEditorState: setTitleES }}
+                state={{
+                  editorState: titleES,
+                  setEditorState: (editorState: EditorState) =>
+                    articleSender({
+                      type: "SET_TITLE",
+                      payload: { editorState },
+                    }),
+                }}
               />
             </div>
             <div>
@@ -40,14 +56,28 @@ const MailWrite = () => {
                 inlineStyleButton={true}
                 keyCommand={true}
                 className=" p-1 border bg-[#F7F7F7] rounded shadow-[inset_0px_1px_10px_rgba(0,0,0,0.05)] w-full h-36 overflow-auto"
-                state={{ editorState: contentES, setEditorState: SetContentES }}
+                state={{
+                  editorState: contentES,
+                  setEditorState: (editorState: EditorState) =>
+                    articleSender({
+                      type: "SET_CONTEXT",
+                      payload: { editorState },
+                    }),
+                }}
               />
             </div>
             <div>
               <TextEditor
                 title="Extra information e.g. contact, banner"
                 className=" p-1 border bg-[#F7F7F7] rounded shadow-[inset_0px_1px_10px_rgba(0,0,0,0.05)] h-24"
-                state={{ editorState: extraES, setEditorState: setextraES }}
+                state={{
+                  editorState: extraES,
+                  setEditorState: (editorState: EditorState) =>
+                    articleSender({
+                      type: "SET_EXTRA",
+                      payload: { editorState },
+                    }),
+                }}
               />
             </div>
           </div>
@@ -55,21 +85,39 @@ const MailWrite = () => {
         <div className="w-[50%] flex-auto flex flex-col justify-end pl-6">
           <div className=" w-full h-[90%] rounded-3xl shadow-[0px_4px_15px_rgba(0,0,0,0.1)] py-8 px-7 flex flex-col justify-between">
             <div className=" ">
-            <h1 className=" font-semibold text-xl" dangerouslySetInnerHTML={{__html: stateToHTML(titleES.getCurrentContent())}}></h1>
-            <hr className=" mt-2 bg-black border-1 border-black " />
-            <div className="mt-2 text-base" dangerouslySetInnerHTML={{__html: stateToHTML(contentES.getCurrentContent())}}></div>
+              <h1
+                className=" font-semibold text-xl"
+                dangerouslySetInnerHTML={{
+                  __html: titleHTML,
+                }}
+              ></h1>
+              <hr className=" mt-2 bg-black border-1 border-black " />
+              <div
+                className="mt-2 text-base"
+                dangerouslySetInnerHTML={{
+                  __html: contentHTML,
+                }}
+              ></div>
             </div>
             <div>
-            <hr className=" mt-2 bg-black border-1 border-black opacity-30" />
-            <div className=" opacity-30 text-sm" dangerouslySetInnerHTML={{__html: stateToHTML(extraES.getCurrentContent())}}></div>
+              <hr className=" mt-2 bg-black border-1 border-black opacity-30" />
+              <div
+                className=" opacity-30 text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: extraHTML,
+                }}
+              ></div>
             </div>
           </div>
         </div>
       </div>
       <div className=" flex-initial h-24 flex justify-between pt-4">
-        <button className=" bg-bPurple text-bWhite rounded w-24 h-9">
+        <Link
+          to="/mail-select"
+          className=" bg-bPurple text-bWhite rounded w-24 h-9 flex justify-center items-center"
+        >
           Back
-        </button>
+        </Link>
         <button className=" bg-bPurple text-bWhite rounded w-24 h-9">
           Send
         </button>
