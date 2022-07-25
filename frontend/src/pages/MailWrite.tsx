@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { EditorState } from "draft-js";
-import { stateToHTML } from "draft-js-export-html";
+import { useNavigate } from "react-router-dom";
 import TextEditor from "../components/mailWrite/TextEditor";
 import useSheetContext, { SheetPayload } from "../contexts/sheetContext";
 import devSheet from "./Sheet.json";
@@ -15,10 +15,16 @@ const MailWrite = () => {
     state: { titleES, contentES, extraES },
     sender: articleSender,
   } = useArticleContext();
-
   const { titleHTML, contentHTML, extraHTML } = useArticleInstancing({
     template: true,
   })[0];
+  const navigate = useNavigate();
+
+
+  const onClickSend = () => {
+    // navigate to result page
+    navigate("/result");
+  };
 
   // debug use test sheet
   useEffect(() => {
@@ -118,7 +124,10 @@ const MailWrite = () => {
         >
           Back
         </Link>
-        <button className=" bg-bPurple text-bWhite rounded w-24 h-9">
+        <button
+          onClick={onClickSend}
+          className=" bg-bPurple text-bWhite rounded w-24 h-9"
+        >
           Send
         </button>
       </div>

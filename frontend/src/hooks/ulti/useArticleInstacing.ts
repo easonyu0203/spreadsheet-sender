@@ -67,7 +67,7 @@ const useArticleInstancing = ({ template, rowIndice }: Props):{titleHTML: string
     contentHTML: string;
     extraHTML: string;
 }[] = []
-  if(rowIndice === undefined || rowIndice.length === 0){
+  if(rowIndice === undefined){
     throw new Error("need to give row indice for article instancing");
   }
   rowIndice.forEach(rowIndex=>{

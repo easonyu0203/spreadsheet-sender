@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext } from "react";
-import { EditorState } from "draft-js";
+import { EditorState, ContentState } from "draft-js";
 
 
 interface State{
@@ -17,9 +17,9 @@ interface Action {
 
 
 const initialState: State = {
-    titleES: EditorState.createEmpty(),
-    contentES: EditorState.createEmpty(),
-    extraES: EditorState.createEmpty()
+    titleES: EditorState.createWithContent(ContentState.createFromText("sample title")),
+    contentES: EditorState.createWithContent(ContentState.createFromText("sample content")),
+    extraES: EditorState.createWithContent(ContentState.createFromText("sample extra"))
 }
 
 const articleReducer = (state: State, {type, payload: {editorState}}: Action): State => {
