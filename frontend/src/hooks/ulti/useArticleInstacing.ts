@@ -38,16 +38,16 @@ const articleInstancing = ({
     throw new Error("need specify row index for article instancing");
   const row = sheetRows[rowIndex];
   sheetHeaders.forEach((header, i) => {
-    const searchWord = `[${header}]`;
-    titleHTML = titleHTML.replaceAll(searchWord, row.data[i]);
+    let searchWord = `[${header}]`;
+    titleHTML = titleHTML.replaceAll(searchWord, row.data[i]).replaceAll("&nbsp;", " ");
   });
   sheetHeaders.forEach((header, i) => {
-    const searchWord = `[${header}]`;
-    contentHTML = contentHTML.replaceAll(searchWord, row.data[i]);
+    let searchWord = `[${header}]`;
+    contentHTML = contentHTML.replaceAll(searchWord, row.data[i]).replaceAll("&nbsp;", " ");
   });
   sheetHeaders.forEach((header, i) => {
-    const searchWord = `[${header}]`;
-    extraHTML = extraHTML.replaceAll(searchWord, row.data[i]);
+    let searchWord = `[${header}]`;
+    extraHTML = extraHTML.replaceAll(searchWord, row.data[i]).replaceAll("&nbsp;", " ");
   });
   return { titleHTML, contentHTML, extraHTML };
 };

@@ -5,7 +5,7 @@ import { useGmail } from "../hooks/google/useGmail";
 import useArticleInstancing from "../hooks/ulti/useArticleInstacing";
 import { MailOptions } from "../type/Mail";
 
-import generateEmailArticle from "../mailTemplates/template1"
+import generateEmailArticle from "../mailTemplates/template1";
 
 import devSheet from "./Sheet.json";
 
@@ -15,9 +15,6 @@ let proccessing: boolean = false;
 
 const Result = (props: Props) => {
   const {
-    state: { titleES, contentES, extraES },
-  } = useArticleContext();
-  const {
     state: { sheetHeaders, sheetRows },
   } = useSheetContext();
   const filterRowIndices = sheetRows
@@ -26,9 +23,9 @@ const Result = (props: Props) => {
   const htmlArticles = useArticleInstancing({ rowIndice: filterRowIndices });
   const textArticles = htmlArticles.map((e) => {
     return {
-      titleHTML: e.titleHTML.replace(/<[^>]+>/g, ""),
-      contentHTML: e.contentHTML.replace(/<[^>]+>/g, ""),
-      extraHTML: e.extraHTML.replace(/<[^>]+>/g, ""),
+      titleText: e.titleHTML.replace(/<[^>]+>/g, ""),
+      contentText: e.contentHTML.replace(/<[^>]+>/g, ""),
+      extraText: e.extraHTML.replace(/<[^>]+>/g, ""),
     };
   });
 
@@ -38,16 +35,23 @@ const Result = (props: Props) => {
     if (proccessing) return;
     proccessing = true;
     //======//
-    const emailIndex = sheetHeaders.findIndex(v=>v==="email");
-    const row = sheetRows[filterRowIndices[0]].data;
-    const {titleHTML, contentHTML, extraHTML} = textArticles[0]
-    const mailConfig: MailOptions = {
-        to: row[emailIndex],
-        subject: textArticles[0].titleHTML,
-        text: textArticles[0].contentHTML,
-        html: generateEmailArticle(titleHTML, contentHTML, extraHTML)
+    const emailIndex = sheetHeaders.findIndex((v) => v === "email");
+    const emailAddresses = sheetRows
+      .filter((v, i) => filterRowIndices.includes(i))
+      .map((v) => v.data[emailIndex]);
+      console.log(emailAddresses)
+    for (let i = 0; i < emailAddresses.length; i++) {
+      const emailAddress = emailAddresses[i];
+      const { titleText, contentText, extraText } = textArticles[i];
+      const { titleHTML, contentHTML, extraHTML } = htmlArticles[i];
+      const mailConfig: MailOptions = {
+        to: emailAddress,
+        subject: titleText,
+        text: `${contentText}\n\n\n${extraText}`,
+        html: generateEmailArticle(titleHTML, contentHTML, extraHTML),
+      };
+      sendGmail(mailConfig);
     }
-    sendGmail(mailConfig);
     //======//
     proccessing = false;
   };
