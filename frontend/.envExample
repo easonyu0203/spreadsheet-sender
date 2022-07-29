@@ -1,0 +1,4 @@
+VITE_GOOGLE_API_KEY=AIzaSyD_eeiV2S5CRcTR8oRAvTNoQvp9JzvI48w
+VITE_GOOGLE_CLIENT_ID=909450819951-jv8hmsp20g1mi7kql6s0qkquei2k4hvu.apps.googleusercontent.com
+
+VITE_BE_URL=http://127.0.0.1:5000

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from email.mime.multipart import MIMEMultipart
 import os
 import string
 import flask
@@ -31,19 +32,23 @@ def test_api_request():
     # use gmail api
     service = build('gmail', 'v1', credentials=Credentials(token))
     # get email address
-    emailAdress = service.users().profile(userId="me")["emailAddress"]
-    # build email message
-    message = MIMEText(mailConfig['html'])
-    for section in ['To', 'Subject']:
-        if section.lower() in mailConfig:
-            message[section] = mailConfig[section.lower()]
+    emailAdress = service.users().getProfile(userId="me").execute()["emailAddress"]
+    # make email
+    # header
+    message = MIMEMultipart('alternative')
+    message["Subject"] = mailConfig["subject"]
+    message["From"] = emailAdress
+    message["To"] = mailConfig["to"]
+    # content
+    text = mailConfig["text"]
+    html = mailConfig["html"]
+    message.attach(MIMEText(text, "plain"))
+    message.attach(MIMEText(html, "html"))
+    # send email
     encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-
     create_message = {
         'raw': encoded_message
     }
-
-    # send email using gmail api
     send_message = service.users().messages().send(
         userId="me", body=create_message).execute()
 
