@@ -9,7 +9,7 @@ export interface MailOptions {
   /** An e-mail address that will appear on the Sender: field */
   sender?: string | Address | undefined;
   /** Comma separated list or an array of recipients e-mail addresses that will appear on the To: field */
-  to?: string | Address | Array<string | Address> | undefined;
+  to: string | Address | Array<string | Address> | undefined;
   /** Comma separated list or an array of recipients e-mail addresses that will appear on the Cc: field */
   cc?: string | Address | Array<string | Address> | undefined;
   /** Comma separated list or an array of recipients e-mail addresses that will appear on the Bcc: field */
@@ -23,7 +23,7 @@ export interface MailOptions {
   /** The subject of the e-mail */
   subject?: string | undefined;
   /** The plaintext version of the message */
-  text?: string | undefined;
+  text: string | undefined;
   /** The HTML version of the message */
   html: string;
   /** Apple Watch specific HTML version of the message, same usage as with text and html */

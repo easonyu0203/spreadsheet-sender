@@ -37,7 +37,7 @@ const Temp = () => {
     setSheetData(data);
   };
 
-  const [gmailReady, sendGmail] = useGmail();
+    
   const [mailText, setMailText] = useState("");
   const [mailTo, setMailTo] = useState("");
   const [mailSubject, setMailSubject] = useState("");

@@ -2,8 +2,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { OverridableTokenClientConfig } from "../../type/Google";
-import { GetCurrentScope, GetGoogleClientEvent, GetTokenClient, useTokenClient } from "./useGoogleClient";
-import {MailOptions, SendEmailConfig, SendEmailResponse} from "../../type/Mail"
+import {
+  GetCurrentScope,
+  GetGoogleClientEvent,
+  GetTokenClient,
+  useTokenClient,
+} from "./useGoogleClient";
+import {
+  MailOptions,
+  SendEmailConfig,
+  SendEmailResponse,
+} from "../../type/Mail";
 
 export const useGmail = (): [
   boolean,
@@ -23,21 +32,24 @@ export const useGmail = (): [
 
 const sendGmail = async (mailOptions: MailOptions) => {
   const config: OverridableTokenClientConfig =
-    GetCurrentScope() && GetCurrentScope().includes("https://www.googleapis.com/auth/gmail.send")
+    GetCurrentScope() &&
+    GetCurrentScope().includes("https://www.googleapis.com/auth/gmail.send")
       ? {}
-      : { scope: "https://www.googleapis.com/auth/gmail.send" };
+      : {
+          scope:
+            "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly",
+        };
   GetTokenClient().requestAccessToken(config);
 
   GetGoogleClientEvent().once("GetAccessToken", async (accessToken) => {
     const config: SendEmailConfig = {
       token: accessToken,
-      mail: mailOptions 
+      mail: mailOptions,
     };
-    const {data} = await axios.post("/test", config);
-    const {success}: SendEmailResponse = data;
-    console.log(`send email ${success}`);
-    console.log(data);
-    
-
+    console.log(JSON.stringify(config));
+    // const {data} = await axios.post("/test", config);
+    // const {success}: SendEmailResponse = data;
+    // console.log(`send email ${success}`);
+    // console.log(data);
   });
 };

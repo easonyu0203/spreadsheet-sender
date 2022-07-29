@@ -24,11 +24,15 @@ def index():
 # post token: access-token
 @app.route('/test', methods=['POST'])
 def test_api_request():
+    # args
     data: string = request.get_json()
     token: string = data["token"]
     mailConfig = data["mail"]
-
+    # use gmail api
     service = build('gmail', 'v1', credentials=Credentials(token))
+    # get email address
+    emailAdress = service.users().profile(userId="me")["emailAddress"]
+    # build email message
     message = MIMEText(mailConfig['html'])
     for section in ['To', 'Subject']:
         if section.lower() in mailConfig:
@@ -39,6 +43,7 @@ def test_api_request():
         'raw': encoded_message
     }
 
+    # send email using gmail api
     send_message = service.users().messages().send(
         userId="me", body=create_message).execute()
 
