@@ -5,6 +5,8 @@ import { useGmail } from "../hooks/google/useGmail";
 import useArticleInstancing from "../hooks/ulti/useArticleInstacing";
 import { MailOptions } from "../type/Mail";
 
+import generateEmailArticle from "../mailTemplates/template1"
+
 import devSheet from "./Sheet.json";
 
 type Props = {};
@@ -38,11 +40,12 @@ const Result = (props: Props) => {
     //======//
     const emailIndex = sheetHeaders.findIndex(v=>v==="email");
     const row = sheetRows[filterRowIndices[0]].data;
+    const {titleHTML, contentHTML, extraHTML} = textArticles[0]
     const mailConfig: MailOptions = {
         to: row[emailIndex],
         subject: textArticles[0].titleHTML,
         text: textArticles[0].contentHTML,
-        html: htmlArticles[0].contentHTML
+        html: generateEmailArticle(titleHTML, contentHTML, extraHTML)
     }
     sendGmail(mailConfig);
     //======//

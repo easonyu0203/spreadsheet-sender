@@ -46,10 +46,7 @@ const sendGmail = async (mailOptions: MailOptions) => {
       token: accessToken,
       mail: mailOptions,
     };
-    console.log(JSON.stringify(config));
-    // const {data} = await axios.post("/test", config);
-    // const {success}: SendEmailResponse = data;
-    // console.log(`send email ${success}`);
-    // console.log(data);
+    const {data} = await axios.post("/test", config);
+    console.log(data);
   });
 };

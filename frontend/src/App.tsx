@@ -5,8 +5,10 @@ import ContactUs from "./pages/ContactUs";
 import MailSelect from "./pages/MailSelect";
 import MailWrite from "./pages/MailWrite";
 import Result from "./pages/Result";
+import useInitAxios from "./hooks/useInitAxios";
 
 const App = () => {
+  useInitAxios();
   return (
     <>
       <BrowserRouter>
