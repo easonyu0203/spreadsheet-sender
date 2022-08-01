@@ -1,60 +1,19 @@
+import { AiFillCheckCircle } from "react-icons/ai";
 import React, { useEffect, useState } from "react";
 import useArticleContext from "../contexts/ArticleContext";
 import useSheetContext from "../contexts/sheetContext";
 import { useGmail } from "../hooks/google/useGmail";
 import useArticleInstancing from "../hooks/ulti/useArticleInstacing";
+import useMailSender from "../hooks/useMailSender";
 import { MailOptions } from "../type/Mail";
 
-import generateEmailArticle from "../mailTemplates/template1";
-
 import devSheet from "./Sheet.json";
+import ResultBoard from "../components/Result/ResultBoard";
 
 type Props = {};
 
-let proccessing: boolean = false;
-
 const Result = (props: Props) => {
-  const {
-    state: { sheetHeaders, sheetRows },
-  } = useSheetContext();
-  const filterRowIndices = sheetRows
-    .map((v, i) => (v.picked ? i : -1))
-    .filter((v) => v !== -1);
-  const htmlArticles = useArticleInstancing({ rowIndice: filterRowIndices });
-  const textArticles = htmlArticles.map((e) => {
-    return {
-      titleText: e.titleHTML.replace(/<[^>]+>/g, ""),
-      contentText: e.contentHTML.replace(/<[^>]+>/g, ""),
-      extraText: e.extraHTML.replace(/<[^>]+>/g, ""),
-    };
-  });
-
-  const [gmailReady, sendGmail] = useGmail();
-
-  const doMailSenderThing = () => {
-    if (proccessing) return;
-    proccessing = true;
-    //======//
-    const emailIndex = sheetHeaders.findIndex((v) => v === "email");
-    const emailAddresses = sheetRows
-      .filter((v, i) => filterRowIndices.includes(i))
-      .map((v) => v.data[emailIndex]);
-      console.log(emailAddresses)
-    for (let i = 0; i < emailAddresses.length; i++) {
-      const emailAddress = emailAddresses[i];
-      const { titleText, contentText, extraText } = textArticles[i];
-      const { titleHTML, contentHTML, extraHTML } = htmlArticles[i];
-      const mailConfig: MailOptions = {
-        to: emailAddress,
-        subject: titleText,
-        text: `${contentText}\n\n\n${extraText}`,
-        html: generateEmailArticle(titleHTML, contentHTML, extraHTML),
-      };
-      sendGmail(mailConfig);
-    }
-    //======//
-    proccessing = false;
-  };
+  const { ready, doMailSenderThing } = useMailSender();
 
   // debug use test sheet
   const { sender: sheetSender } = useSheetContext();
@@ -65,8 +24,16 @@ const Result = (props: Props) => {
   }, []);
 
   return (
-    <div className=" h-screen w-screen flex justify-center items-center">
-      <button onClick={doMailSenderThing}>Result</button>
+    <div className=" h-screen w-screen pt-16 pb-8 px-[12%] flex flex-col space-y-10 justify-center items-center">
+      <div className=" flex w-full justify-between space-x-14">
+        <ResultBoard success={true}/>
+        
+        <ResultBoard success={false}/>
+      </div>
+      <div className=" w-full flex justify-end space-x-3">
+        <button className=" bg-bPurple text-bWhite rounded py-1 px-6">Download Result</button>
+        <button className=" bg-bPurple text-bWhite rounded py-1 px-6">Send the result to my account</button>
+      </div>
     </div>
   );
 };
